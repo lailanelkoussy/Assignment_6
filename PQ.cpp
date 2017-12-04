@@ -9,11 +9,20 @@ using namespace std;
 
 //Constructor
 PQ::PQ(int **bArray, int n)
-{
-    a = new E[5];
+{   a = new E[10];
     N = 0;
+
     itemMin = -32767; // Minimum Heap
     a[0].sum = itemMin ;
+
+    for (int i =0; i<n; i++) {
+        int count = 1;
+        for (int j = 0; j < n; j++) {
+            goal[i][j] = count;
+            count++;
+        }
+    }
+        goal[n-1][n-1] = 0;
 
     E initial;
     //Allocate memory for board 2D array
@@ -30,9 +39,10 @@ PQ::PQ(int **bArray, int n)
     initial.g   = 0;
     initial.h   = findH(initial, n);
     initial.sum =  initial.h + initial.g;
+    initial.size = n;
 
     cout << endl << "Initial" << endl;
-    displayBorad(initial, n);
+    displayBoard(initial, n);
 
     insert(initial);
 }
@@ -76,7 +86,7 @@ void PQ::downheap(int k)
 }
 
 //Display a board
-void PQ::displayBorad(E b, int n)
+void PQ::displayBoard(E b, int n)
 {
     cout << "========" << endl << "g " << " " << "h " << " " << "c " << endl;
     cout << b.g << "  " << b.h << "  " << b.sum << endl << "--------" << endl;
@@ -89,7 +99,7 @@ void PQ::displayBorad(E b, int n)
     cout << "=========" << endl << endl;
 }
 
-//find index i and index j of value x in the borad b
+//find index i and index j of value x in the board b
 void PQ::findIJ(E b, int x, int & i, int & j, int n)
 {
     i = 0; j = 0;
@@ -135,4 +145,15 @@ int PQ::findH(E b, int n)
         }
     }
     return s;
+}
+
+bool PQ::E::sameAsPredecessor() {
+    bool temp = true;
+    for (int i = 0 ; (i<size) && temp; i++)
+        for (int j = 0; (j<size) && temp; j++){
+            if (arr[i][j] != predecessor->arr[i][j])
+                temp = false ;
+        }
+
+    return temp;
 }
